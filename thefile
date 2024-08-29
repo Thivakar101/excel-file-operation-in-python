@@ -1,58 +1,108 @@
 import pandas as pd
+from statistics import median, mode
 
 # Read the CSV file
 df = pd.read_csv('data.csv')
 
-# Display the first few rows of the DataFrame
+# Display the initial DataFrame
 print("Initial DataFrame:")
 print(df.head())
 print()
 
-# 1. Filter data where CGPA > 3.7
-filtered_df = df[df['cgpa'] > 3.7]
-print("Filtered DataFrame (CGPA > 3.7):")
-print(filtered_df)
+# Handle missing values
+# Replace NaN in 'cgpa' with the median value of the 'cgpa' column
+if 'cgpa' in df.columns:
+    cgpa_median = df['cgpa'].median()  # Calculate median for replacement
+    df['cgpa'].fillna(cgpa_median, inplace=True)
+    print(f"Missing values in 'cgpa' column replaced with median value: {cgpa_median}")
+else:
+    print("'cgpa' column not found in the DataFrame.")
+
+# Replace NaN in 'students' with a placeholder text
+if 'students' in df.columns:
+    df['students'].fillna('Unknown', inplace=True)
+    print("Missing values in 'students' column replaced with 'Unknown'.")
+else:
+    print("'students' column not found in the DataFrame.")
 print()
 
-# 2. Calculate the average CGPA
-average_cgpa = df['cgpa'].mean()
-print(f"Average CGPA: {average_cgpa}")
+# Extract the 'cgpa' column for median and mode calculations
+cgpa_values = df['cgpa']
+
+# Calculate the median and mode
+cgpa_median = median(cgpa_values)
+try:
+    cgpa_mode = mode(cgpa_values)
+except:
+    cgpa_mode = 'No unique mode'  # Handle case where mode is not unique
+
+print(f"Median CGPA: {cgpa_median}")
+print(f"Mode CGPA: {cgpa_mode}")
 print()
 
-# 3. Add a new column indicating if the behaviour is 'Excellent'
-df['is_excellent'] = df['behaviour'] == 'Excellent'
-print("DataFrame with 'is_excellent' column added:")
-print(df.head())
+# Demonstrate dictionary operations
+# Convert DataFrame to a dictionary
+data_dict = df.to_dict(orient='list')
+print("Dictionary representation of DataFrame:")
+print(data_dict)
 print()
 
-# 4. Handle missing values: Fill missing values in 'cgpa' with the mean
-df['cgpa'].fillna(df['cgpa'].mean(), inplace=True)
-print("DataFrame with missing values handled:")
-print(df.head())
+# Convert a dictionary to a DataFrame (example)
+new_data_dict = {
+    'students': ['David', 'Eva'],
+    'cgpa': [3.6, 3.7],
+    'behaviour': ['Good', 'Excellent']
+}
+new_df = pd.DataFrame(new_data_dict)
+
+# Append new data to the original DataFrame
+appended_df = pd.concat([df, new_df], ignore_index=True)
+print("DataFrame after appending new data:")
+print(appended_df.head())
 print()
 
-# 5. Sort the DataFrame by 'cgpa' in descending order
-sorted_df = df.sort_values(by='cgpa', ascending=False)
-print("Sorted DataFrame by CGPA (Descending):")
-print(sorted_df.head())
+# Add a new column with a default value
+appended_df['new_column'] = 'Default Value'
+print("DataFrame with new column 'new_column' added:")
+print(appended_df.head())
 print()
 
-# 6. Group by 'behaviour' and calculate the average CGPA for each group
-grouped_df = df.groupby('behaviour')['cgpa'].mean().reset_index()
-print("Grouped DataFrame (Average CGPA by Behaviour):")
-print(grouped_df)
+# Add a new row with specific values
+new_row = pd.DataFrame({
+    'students': ['John Doe'],
+    'cgpa': [4.0],
+    'behaviour': ['Excellent'],
+    'new_column': ['Special Value']
+})
+
+# Concatenate the new row with the existing DataFrame
+appended_df = pd.concat([appended_df, new_row], ignore_index=True)
+print("DataFrame after adding a new row:")
+print(appended_df.tail())
+print()
+
+# Check if 'students' column exists before converting to a list
+if 'students' in df.columns:
+    # Demonstrate list operations
+    names_list = df['students'].tolist()
+    print("List of students from DataFrame:")
+    print(names_list)
+    print()
+else:
+    print("Column 'students' does not exist in the DataFrame.")
+    print()
+
+# Indexing example: Get the first row of the DataFrame
+first_row = df.iloc[0]
+print("First row of the DataFrame:")
+print(first_row)
 print()
 
 # Save the modified DataFrame to a new CSV file
-df.to_csv('modified_data.csv', index=False)
+appended_df.to_csv('modified_data_with_new_entries.csv', index=False)
 
-# Save the filtered DataFrame to a new CSV file
-filtered_df.to_csv('filtered_data.csv', index=False)
+print("All operations completed and results saved to 'modified_data_with_new_entries.csv'.")
 
-# Save the grouped DataFrame to a new CSV file
-grouped_df.to_csv('grouped_data.csv', index=False)
-
-print("All operations completed and results saved to new CSV files.")
 
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
