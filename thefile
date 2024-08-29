@@ -1,0 +1,108 @@
+import pandas as pd
+
+# Read the CSV file
+df = pd.read_csv('data.csv')
+
+# Display the first few rows of the DataFrame
+print("Initial DataFrame:")
+print(df.head())
+print()
+
+# 1. Filter data where CGPA > 3.7
+filtered_df = df[df['cgpa'] > 3.7]
+print("Filtered DataFrame (CGPA > 3.7):")
+print(filtered_df)
+print()
+
+# 2. Calculate the average CGPA
+average_cgpa = df['cgpa'].mean()
+print(f"Average CGPA: {average_cgpa}")
+print()
+
+# 3. Add a new column indicating if the behaviour is 'Excellent'
+df['is_excellent'] = df['behaviour'] == 'Excellent'
+print("DataFrame with 'is_excellent' column added:")
+print(df.head())
+print()
+
+# 4. Handle missing values: Fill missing values in 'cgpa' with the mean
+df['cgpa'].fillna(df['cgpa'].mean(), inplace=True)
+print("DataFrame with missing values handled:")
+print(df.head())
+print()
+
+# 5. Sort the DataFrame by 'cgpa' in descending order
+sorted_df = df.sort_values(by='cgpa', ascending=False)
+print("Sorted DataFrame by CGPA (Descending):")
+print(sorted_df.head())
+print()
+
+# 6. Group by 'behaviour' and calculate the average CGPA for each group
+grouped_df = df.groupby('behaviour')['cgpa'].mean().reset_index()
+print("Grouped DataFrame (Average CGPA by Behaviour):")
+print(grouped_df)
+print()
+
+# Save the modified DataFrame to a new CSV file
+df.to_csv('modified_data.csv', index=False)
+
+# Save the filtered DataFrame to a new CSV file
+filtered_df.to_csv('filtered_data.csv', index=False)
+
+# Save the grouped DataFrame to a new CSV file
+grouped_df.to_csv('grouped_data.csv', index=False)
+
+print("All operations completed and results saved to new CSV files.")
+
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+OUTPUT:
+Initial DataFrame:
+    students  cgpa behaviour
+0     rephin  1.27     worst
+1  narayanan  9.00      good
+2   srikanth  8.90       mid
+3       aqua  9.90      good
+4   sanjay s  8.30      good
+
+Filtered DataFrame (CGPA > 3.7):
+    students  cgpa behaviour
+1  narayanan   9.0      good
+2   srikanth   8.9       mid
+3       aqua   9.9      good
+4   sanjay s   8.3      good
+5       hiba   8.7      good
+
+Average CGPA: 7.678333333333335
+
+DataFrame with 'is_excellent' column added:
+    students  cgpa behaviour  is_excellent
+0     rephin  1.27     worst         False
+1  narayanan  9.00      good         False
+2   srikanth  8.90       mid         False
+3       aqua  9.90      good         False
+4   sanjay s  8.30      good         False
+
+DataFrame with missing values handled:
+    students  cgpa behaviour  is_excellent
+0     rephin  1.27     worst         False
+1  narayanan  9.00      good         False
+2   srikanth  8.90       mid         False
+3       aqua  9.90      good         False
+4   sanjay s  8.30      good         False
+
+Sorted DataFrame by CGPA (Descending):
+    students  cgpa behaviour  is_excellent
+3       aqua   9.9      good         False
+1  narayanan   9.0      good         False
+2   srikanth   8.9       mid         False
+5       hiba   8.7      good         False
+4   sanjay s   8.3      good         False
+
+Grouped DataFrame (Average CGPA by Behaviour):
+  behaviour   cgpa
+0      good  8.975
+1       mid  8.900
+2     worst  1.270
+
+All operations completed and results saved to new CSV files.
