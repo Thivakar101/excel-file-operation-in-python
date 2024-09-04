@@ -1,8 +1,6 @@
 import pandas as pd
 
-# Sample data for demonstration
-a = [10, 20, 30]
-print(pd.Series(a, index=['I', 'II', 'III']))
+
 
 # Read the CSV file
 df = pd.read_csv("data1.csv")
@@ -18,6 +16,7 @@ print("\n", df1)
 
 # Fill missing values with 0
 df = df.fillna(0)
+print("\nDataFrame after filling missing values:")
 print(df)
 
 # Create a new DataFrame with additional data
@@ -32,26 +31,35 @@ new = pd.DataFrame([{
 
 # Concatenate the new DataFrame with the existing one
 df = pd.concat([df, new], ignore_index=True)
-print("\n\n")
+print("\n\nDataFrame after concatenation:")
 print(df)
 
-# Check if the 'Major' column exists
-if 'Major' in df.columns:
-    print("\nThe 'Major' column is present.")
+# Set 'S.No' as the index if it exists
+if 'S.No' in df.columns:
+    df.set_index('S.No', inplace=True)
+    print("\nDataFrame with 'S.No' as index:")
+    print(df)
 else:
-    print("\nThe 'Major' column is not present.")
+    print("\n'S.No' column not found. Using default indexing:")
+
+# Access a value based on the index
+# For example, get the row where 'S.No' is 11
+index_value = 11
+if index_value in df.index:
+    row_data = df.loc[index_value]
+    print(f"\nData for index '{index_value}':")
+    print(row_data)
+else:
+    print(f"\nIndex value '{index_value}' not found in DataFrame.")
 
 # Print the length of columns and rows
 print("\nLength of the columns:", len(df.columns))
 print("\nLength of the rows:", len(df))
 
--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-OUTPUT:
-I      10
-II     20
-III    30
-dtype: int64
 
+
+
+_---------------------------------------------------------------
 Mean of GPA is 3.4159999999999995
 
 Median of Age is 18.0
@@ -61,6 +69,8 @@ Median of Age is 18.0
 1    2     B
 2    3     C
 3    4     D
+
+DataFrame after filling missing values:
    S.No       Name  Age   GPA  Gender Major
 0     1       aqua   18  3.56    Male    CS
 1     2       omen   19  3.84  Female    CS
@@ -69,7 +79,7 @@ Median of Age is 18.0
 4     5  brimstone   18  3.45  Female    IT
 
 
-
+DataFrame after concatenation:
    S.No       Name  Age   GPA  Gender Major
 0     1       aqua   18  3.56    Male    CS
 1     2       omen   19  3.84  Female    CS
@@ -78,10 +88,24 @@ Median of Age is 18.0
 4     5  brimstone   18  3.45  Female    IT
 5    11       Jane   25  3.87  Female    IT
 
-The 'Major' column is present.
+DataFrame with 'S.No' as index:
+           Name  Age   GPA  Gender Major
+S.No                                    
+1          aqua   18  3.56    Male    CS
+2          omen   19  3.84  Female    CS
+3         astra   18  3.21    Male    CS
+4          vyse   18  3.02    Male    EC
+5     brimstone   18  3.45  Female    IT
+11         Jane   25  3.87  Female    IT
 
-Length of the columns: 6
+Data for index '11':
+Name        Jane
+Age           25
+GPA         3.87
+Gender    Female
+Major         IT
+Name: 11, dtype: object
+
+Length of the columns: 5
 
 Length of the rows: 6
-
-All operations completed and results saved to new CSV files.
