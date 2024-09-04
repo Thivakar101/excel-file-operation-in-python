@@ -1,158 +1,87 @@
 import pandas as pd
-from statistics import median, mode
+
+# Sample data for demonstration
+a = [10, 20, 30]
+print(pd.Series(a, index=['I', 'II', 'III']))
 
 # Read the CSV file
-df = pd.read_csv('data.csv')
+df = pd.read_csv("data1.csv")
 
-# Display the initial DataFrame
-print("Initial DataFrame:")
-print(df.head())
-print()
+# Calculate and print mean of GPA and median of Age
+print("\nMean of GPA is", df['GPA'].mean())
+print("\nMedian of Age is", df['Age'].median())
 
-# Handle missing values
-# Replace NaN in 'cgpa' with the median value of the 'cgpa' column
-if 'cgpa' in df.columns:
-    cgpa_median = df['cgpa'].median()  # Calculate median for replacement
-    df['cgpa'].fillna(cgpa_median, inplace=True)
-    print(f"Missing values in 'cgpa' column replaced with median value: {cgpa_median}")
+# Create a DataFrame from a dictionary
+my_dict = {1: "A", 2: "B", 3: "C", 4: "D"}
+df1 = pd.DataFrame(my_dict.items(), columns=["Key", "Value"])
+print("\n", df1)
+
+# Fill missing values with 0
+df = df.fillna(0)
+print(df)
+
+# Create a new DataFrame with additional data
+new = pd.DataFrame([{
+    "S.No": 11,
+    'Name': 'Jane',
+    'Age': 25,
+    'GPA': 3.87,
+    "Gender": "Female",
+    "Major": "IT"
+}])
+
+# Concatenate the new DataFrame with the existing one
+df = pd.concat([df, new], ignore_index=True)
+print("\n\n")
+print(df)
+
+# Check if the 'Major' column exists
+if 'Major' in df.columns:
+    print("\nThe 'Major' column is present.")
 else:
-    print("'cgpa' column not found in the DataFrame.")
+    print("\nThe 'Major' column is not present.")
 
-# Replace NaN in 'students' with a placeholder text
-if 'students' in df.columns:
-    df['students'].fillna('Unknown', inplace=True)
-    print("Missing values in 'students' column replaced with 'Unknown'.")
-else:
-    print("'students' column not found in the DataFrame.")
-print()
-
-# Extract the 'cgpa' column for median and mode calculations
-cgpa_values = df['cgpa']
-
-# Calculate the median and mode
-cgpa_median = median(cgpa_values)
-try:
-    cgpa_mode = mode(cgpa_values)
-except:
-    cgpa_mode = 'No unique mode'  # Handle case where mode is not unique
-
-print(f"Median CGPA: {cgpa_median}")
-print(f"Mode CGPA: {cgpa_mode}")
-print()
-
-# Demonstrate dictionary operations
-# Convert DataFrame to a dictionary
-data_dict = df.to_dict(orient='list')
-print("Dictionary representation of DataFrame:")
-print(data_dict)
-print()
-
-# Convert a dictionary to a DataFrame (example)
-new_data_dict = {
-    'students': ['David', 'Eva'],
-    'cgpa': [3.6, 3.7],
-    'behaviour': ['Good', 'Excellent']
-}
-new_df = pd.DataFrame(new_data_dict)
-
-# Append new data to the original DataFrame
-appended_df = pd.concat([df, new_df], ignore_index=True)
-print("DataFrame after appending new data:")
-print(appended_df.head())
-print()
-
-# Add a new column with a default value
-appended_df['new_column'] = 'Default Value'
-print("DataFrame with new column 'new_column' added:")
-print(appended_df.head())
-print()
-
-# Add a new row with specific values
-new_row = pd.DataFrame({
-    'students': ['John Doe'],
-    'cgpa': [4.0],
-    'behaviour': ['Excellent'],
-    'new_column': ['Special Value']
-})
-
-# Concatenate the new row with the existing DataFrame
-appended_df = pd.concat([appended_df, new_row], ignore_index=True)
-print("DataFrame after adding a new row:")
-print(appended_df.tail())
-print()
-
-# Check if 'students' column exists before converting to a list
-if 'students' in df.columns:
-    # Demonstrate list operations
-    names_list = df['students'].tolist()
-    print("List of students from DataFrame:")
-    print(names_list)
-    print()
-else:
-    print("Column 'students' does not exist in the DataFrame.")
-    print()
-
-# Indexing example: Get the first row of the DataFrame
-first_row = df.iloc[0]
-print("First row of the DataFrame:")
-print(first_row)
-print()
-
-# Save the modified DataFrame to a new CSV file
-appended_df.to_csv('modified_data_with_new_entries.csv', index=False)
-
-print("All operations completed and results saved to 'modified_data_with_new_entries.csv'.")
-
-
+# Print the length of columns and rows
+print("\nLength of the columns:", len(df.columns))
+print("\nLength of the rows:", len(df))
 
 -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 OUTPUT:
-Initial DataFrame:
-    students  cgpa behaviour
-0     rephin  1.27     worst
-1  narayanan  9.00      good
-2   srikanth  8.90       mid
-3       aqua  9.90      good
-4   sanjay s  8.30      good
+I      10
+II     20
+III    30
+dtype: int64
 
-Filtered DataFrame (CGPA > 3.7):
-    students  cgpa behaviour
-1  narayanan   9.0      good
-2   srikanth   8.9       mid
-3       aqua   9.9      good
-4   sanjay s   8.3      good
-5       hiba   8.7      good
+Mean of GPA is 3.4159999999999995
 
-Average CGPA: 7.678333333333335
+Median of Age is 18.0
 
-DataFrame with 'is_excellent' column added:
-    students  cgpa behaviour  is_excellent
-0     rephin  1.27     worst         False
-1  narayanan  9.00      good         False
-2   srikanth  8.90       mid         False
-3       aqua  9.90      good         False
-4   sanjay s  8.30      good         False
+    Key Value
+0    1     A
+1    2     B
+2    3     C
+3    4     D
+   S.No       Name  Age   GPA  Gender Major
+0     1       aqua   18  3.56    Male    CS
+1     2       omen   19  3.84  Female    CS
+2     3      astra   18  3.21    Male    CS
+3     4       vyse   18  3.02    Male    EC
+4     5  brimstone   18  3.45  Female    IT
 
-DataFrame with missing values handled:
-    students  cgpa behaviour  is_excellent
-0     rephin  1.27     worst         False
-1  narayanan  9.00      good         False
-2   srikanth  8.90       mid         False
-3       aqua  9.90      good         False
-4   sanjay s  8.30      good         False
 
-Sorted DataFrame by CGPA (Descending):
-    students  cgpa behaviour  is_excellent
-3       aqua   9.9      good         False
-1  narayanan   9.0      good         False
-2   srikanth   8.9       mid         False
-5       hiba   8.7      good         False
-4   sanjay s   8.3      good         False
 
-Grouped DataFrame (Average CGPA by Behaviour):
-  behaviour   cgpa
-0      good  8.975
-1       mid  8.900
-2     worst  1.270
+   S.No       Name  Age   GPA  Gender Major
+0     1       aqua   18  3.56    Male    CS
+1     2       omen   19  3.84  Female    CS
+2     3      astra   18  3.21    Male    CS
+3     4       vyse   18  3.02    Male    EC
+4     5  brimstone   18  3.45  Female    IT
+5    11       Jane   25  3.87  Female    IT
+
+The 'Major' column is present.
+
+Length of the columns: 6
+
+Length of the rows: 6
 
 All operations completed and results saved to new CSV files.
